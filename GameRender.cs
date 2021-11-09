@@ -17,6 +17,11 @@ namespace GalaShooter
             menu.DrawMenu(left, top);
         }
 
+        public void DrawChoiceArrows(GameMenu menu, int choice, int left, int top)
+        {
+            menu.DrawChoiceArrows(choice, left, top);
+        }
+
         public void DrawBorders(int left, int top)
         {
             Console.SetCursorPosition(left, top);
@@ -46,6 +51,15 @@ namespace GalaShooter
                 Console.SetCursorPosition(left, top);
                 Console.Write(title[i]);
                 top++;
+            }
+        }
+
+        public void ClearScreen()
+        {
+            for (int i = 4; i < 61; i++)
+            {
+                Console.SetCursorPosition(1, i);
+                Console.Write(new String(' ', 98));
             }
         }
     }

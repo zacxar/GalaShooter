@@ -10,10 +10,8 @@ namespace GalaShooter
             Console.SetWindowSize(240, 63);
             Console.CursorVisible = false;
 
-            Game game = new Game();
-            game.GameLoop();
-
-            Console.ReadKey();
+            GameManager game = new GameManager();
+            game.GameStart();
         }
     }
 }

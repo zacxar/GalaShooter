@@ -4,23 +4,13 @@ using System.Text;
 
 namespace GalaShooter
 {
-    class GameRender
+    class GameWindow
     {
         private string[] title = {
                 " _____   _____          _____   _____  _     _  _____   _____  _______  ______  ______",
                 "|  ____ |_____| |      |_____|  \\____  |_____| |     | |     |    |    |______ |_____/",
                 "|_____| |     | |_____ |     |  _____| |     | |_____| |_____|    |    |______ |    \\_"
         };
-
-        public void DrawMenu(GameMenu menu, int left, int top)
-        {
-            menu.DrawMenu(left, top);
-        }
-
-        public void DrawChoiceArrows(GameMenu menu, int choice, int left, int top)
-        {
-            menu.DrawChoiceArrows(choice, left, top);
-        }
 
         public void DrawBorders(int left, int top)
         {
@@ -46,7 +36,7 @@ namespace GalaShooter
 
         public void DrawTitle(int left, int top)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < title.Length; i++)
             {
                 Console.SetCursorPosition(left, top);
                 Console.Write(title[i]);

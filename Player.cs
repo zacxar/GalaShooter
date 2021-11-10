@@ -7,16 +7,16 @@ namespace GalaShooter
     class Player
     {
         public string playerName { get; set; }
-        public string[] playerShip { get; set; }
-        public int playerHP { get; set; }
-        public int posLeft { get; set; }
-        public int posTop { get; set; }
+        public string[] playerShip { get; private set; }
+        public int playerHP { get; private set; }
+        public int posLeft { get; private set; }
+        public int posTop { get; private set; }
         public int score { get; set; }
 
         public Player()
         {
-            posLeft = 46;
-            posTop = 45;
+            this.posLeft = 46;
+            this.posTop = 45;
             this.playerHP = 5;
             this.score = 0;
 
@@ -66,6 +66,8 @@ namespace GalaShooter
                         DrawPlayer();
                     }
                     break;
+                case GameInput.space:
+                    break;
                 default:
                     break;
             }
@@ -75,6 +77,14 @@ namespace GalaShooter
         {
             if (playerHP > 0)
                 playerHP--;
+        }
+
+        public void ResetPlayer()
+        {
+            this.posLeft = 46;
+            this.posTop = 45;
+            this.playerHP = 5;
+            this.score = 0;
         }
     }
 }

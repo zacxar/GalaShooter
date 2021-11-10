@@ -7,24 +7,30 @@ namespace GalaShooter
     class GameManager
     {
         private GameMenu gameMenu;
-        private GameRender gameRender;
+        private GameWindow gameWindow;
         private InputHandler inputHandler;
         private Player player;
 
         public GameManager()
         {
-            gameMenu = new GameMenu();
-            gameRender = new GameRender();
-            inputHandler = new InputHandler();
-            player = new Player();
+            this.gameMenu = new GameMenu();
+            this.gameWindow = new GameWindow();
+            this.inputHandler = new InputHandler();
+            this.player = new Player();
         }
 
         public void GameStart()
         {
-            gameRender.DrawBorders(0, 3);
-            gameRender.DrawTitle(7, 0);
-            gameRender.DrawMenu(gameMenu, 23, 27);
-            gameRender.DrawChoiceArrows(gameMenu, 0, 23, 27);
+            gameWindow.DrawBorders(0, 3);
+            gameWindow.DrawTitle(7, 0);
+            GameMenuLoop();
+        }
+
+        public void GameMenuLoop()
+        {
+            gameWindow.ClearScreen();
+            gameMenu.DrawMenu(23, 27);
+            gameMenu.DrawChoiceArrows(0, 23, 27);
 
             int choice = 0;
 
@@ -36,20 +42,28 @@ namespace GalaShooter
                 {
                     case GameInput.down:
                         choice = (gameMenu.currentPos + 1) % 3;
-                        gameRender.DrawChoiceArrows(gameMenu, choice, 23, 27);
+                        gameMenu.ClearChoiceArrows(23, 27);
+                        gameMenu.DrawChoiceArrows(choice, 23, 27);
                         break;
                     case GameInput.up:
                         choice = (gameMenu.currentPos + 2) % 3;
-                        gameRender.DrawChoiceArrows(gameMenu, choice, 23, 27);
+                        gameMenu.ClearChoiceArrows(23, 27);
+                        gameMenu.DrawChoiceArrows(choice, 23, 27);
                         break;
                     case GameInput.space:
                         switch (gameMenu.currentPos)
                         {
                             case 0: //rozpoczęcie gry
                                 GameLoop();
+                                gameWindow.ClearScreen();
+                                gameMenu.DrawMenu(23, 27);
+                                gameMenu.DrawChoiceArrows(choice, 23, 27);
                                 break;
                             case 1: //wyświetlenie tablicy wyników
                                 ShowLeaderboard();
+                                gameWindow.ClearScreen();
+                                gameMenu.DrawMenu(23, 27);
+                                gameMenu.DrawChoiceArrows(choice, 23, 27);
                                 break;
                             case 2: //wyjście z gry
                                 System.Environment.Exit(0);
@@ -65,12 +79,29 @@ namespace GalaShooter
         //od 2,5 do 97, 59
         public void GameLoop()
         {
-            gameRender.ClearScreen();
+            gameWindow.ClearScreen();
+
+            player.ResetPlayer();
             player.DrawPlayer();
 
             while (true)
-            {
-                player.MovePlayer(inputHandler.GetInput());
+            { 
+                GameInput input = inputHandler.GetInput();
+
+                switch (input)
+                {
+                    case GameInput.left:
+                        player.MovePlayer(input);
+                        break;
+                    case GameInput.right:
+                        player.MovePlayer(input);
+                        break;
+                    case GameInput.space:
+                        break;
+                    case GameInput.exit:
+                        return;
+                        break;
+                }
             }
         }
 

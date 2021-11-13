@@ -22,15 +22,15 @@ namespace GalaShooter
         public void GameStart()
         {
             gameWindow.DrawBorders(0, 3);
-            gameWindow.DrawTitle(7, 0);
+            gameWindow.DrawTitle();
             GameMenuLoop();
         }
 
         public void GameMenuLoop()
         {
             gameWindow.ClearScreen();
-            gameMenu.DrawMenu(23, 27);
-            gameMenu.DrawChoiceArrows(0, 23, 27);
+            gameMenu.DrawMenu();
+            gameMenu.DrawChoiceArrows(0);
 
             int choice = 0;
 
@@ -42,28 +42,29 @@ namespace GalaShooter
                 {
                     case GameInput.down:
                         choice = (gameMenu.currentPos + 1) % 3;
-                        gameMenu.ClearChoiceArrows(23, 27);
-                        gameMenu.DrawChoiceArrows(choice, 23, 27);
+                        gameMenu.ClearChoiceArrows();
+                        gameMenu.DrawChoiceArrows(choice);
                         break;
                     case GameInput.up:
                         choice = (gameMenu.currentPos + 2) % 3;
-                        gameMenu.ClearChoiceArrows(23, 27);
-                        gameMenu.DrawChoiceArrows(choice, 23, 27);
+                        gameMenu.ClearChoiceArrows();
+                        gameMenu.DrawChoiceArrows(choice);
                         break;
                     case GameInput.space:
                         switch (gameMenu.currentPos)
                         {
                             case 0: //rozpoczęcie gry
+                                NameChoiceMenu();
                                 GameLoop();
                                 gameWindow.ClearScreen();
-                                gameMenu.DrawMenu(23, 27);
-                                gameMenu.DrawChoiceArrows(choice, 23, 27);
+                                gameMenu.DrawMenu();
+                                gameMenu.DrawChoiceArrows(choice);
                                 break;
                             case 1: //wyświetlenie tablicy wyników
                                 ShowLeaderboard();
                                 gameWindow.ClearScreen();
-                                gameMenu.DrawMenu(23, 27);
-                                gameMenu.DrawChoiceArrows(choice, 23, 27);
+                                gameMenu.DrawMenu();
+                                gameMenu.DrawChoiceArrows(choice);
                                 break;
                             case 2: //wyjście z gry
                                 System.Environment.Exit(0);
@@ -81,7 +82,6 @@ namespace GalaShooter
         {
             gameWindow.ClearScreen();
 
-            player.ResetPlayer();
             player.DrawPlayer();
 
             while (true)
@@ -103,6 +103,18 @@ namespace GalaShooter
                         break;
                 }
             }
+        }
+
+        public void NameChoiceMenu()
+        {
+            player.ResetPlayer();
+            gameWindow.ClearScreen();
+            gameWindow.DrawNameChoiceMenu();
+
+            Console.CursorVisible = true;
+            string name = Console.ReadLine();
+            player.playerName = name;
+            Console.CursorVisible = false;
         }
 
         public void ShowLeaderboard()

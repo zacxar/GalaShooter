@@ -15,17 +15,26 @@ namespace GalaShooter
 
         public Player()
         {
-            this.posLeft = 46;
+            this.playerShip = new string[]
+            {
+                "  __/┘└\\__  ",
+                " /─ ¨  ¨ ─\\ ",
+                "|__ _  _ __|",
+                "   \\║__║/   ",
+                "    ^  ^    "
+            };
+
+            this.posLeft = (Globals.WINDOW_WIDTH + 2 - playerShip[0].Length) / 2;
             this.posTop = 45;
             this.playerHP = 5;
             this.score = 0;
 
-            playerShip = new string[] {
-                    " __/\\__ ",
-                    "/__¨¨__\\",
-                    "  \\║║/  ",
-                    "  ^  ^  "
-            };
+            //playerShip = new string[] {
+            //        " __/\\__ ",
+            //        "/__¨¨__\\",
+            //        "  \\║║/  ",
+            //        "  ^  ^  "
+            //};
         }
 
         public void DrawPlayer()
@@ -51,18 +60,18 @@ namespace GalaShooter
             switch (input)
             {
                 case GameInput.left:
-                    if (posLeft > 4)
+                    if (posLeft > 6)
                     {
                         ClearPlayer();
-                        posLeft -= 4;
+                        posLeft -= 6;
                         DrawPlayer();
                     }
                     break;
                 case GameInput.right:
-                    if (posLeft < 90)
+                    if (posLeft < 86)
                     {
                         ClearPlayer();
-                        posLeft += 4;
+                        posLeft += 6;
                         DrawPlayer();
                     }
                     break;
@@ -81,7 +90,7 @@ namespace GalaShooter
 
         public void ResetPlayer()
         {
-            this.posLeft = 46;
+            this.posLeft = (Globals.WINDOW_WIDTH + 2 - playerShip[0].Length) / 2;
             this.posTop = 45;
             this.playerHP = 5;
             this.score = 0;

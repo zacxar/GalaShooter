@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GalaShooter
 {
-    class EnemyMissiles
+    class EnemyMissile
     {
 
     }

@@ -13,5 +13,6 @@ namespace GalaShooter
         up = 4,
         space = 5,
         exit = 6,
+        enter = 7,
     }
 }

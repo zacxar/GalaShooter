@@ -24,6 +24,8 @@ namespace GalaShooter
                     return GameInput.space;
                 else if (key.Key == ConsoleKey.Escape)
                     return GameInput.exit;
+                else if (key.Key == ConsoleKey.Enter)
+                    return GameInput.enter;
             }
 
             return GameInput.none;

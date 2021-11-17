@@ -9,62 +9,115 @@ namespace GalaShooter
 {
     class Enemy
     {
-        private int rowCount;
-        private int enemiesCount;
-        private int[,] enemiesTable;
-        private int[,] enemiesHp;
-        private List<EnemyMissiles> enemyMissiles;
-        private string[,] enemyTypes;
+        public int enemyHp { get; private set; }
+        public int posLeft { get; private set; }
+        public int posTop { get; private set; }
+        public string[] enemyShip { get; private set; }
+        public int enemyShootTimer { get; set; }
+        public int enemyMoveTimer { get; set; }
 
-        public Enemy(string filePath)
+        public Enemy()
         {
-            TextReader textReader = File.OpenText(filePath);
-            this.rowCount = int.Parse(textReader.ReadLine());
-            this.enemiesCount = int.Parse(textReader.ReadLine());
-            this.enemiesTable = new int[rowCount, enemiesCount];
-            this.enemiesHp = new int[rowCount, enemiesCount];
+            enemyHp = 5;
+            posLeft = 2;
+            posTop = 4;
 
-            for (int i = 0; i < rowCount; i++)
+            enemyShip = new string[]
             {
-                for (int j = 0; j < enemiesCount; j++)
-                {
-                    int enemyType = textReader.Read();
-                    enemiesTable[i, j] = enemyType;
-
-                    switch (enemyType)
-                    {
-                        case 1:
-                            enemiesHp[i, j] = 3;
-                            break;
-                        case 2:
-                            enemiesHp[i, j] = 2;
-                            break;
-                        case 3:
-                            enemiesHp[i, j] = 5;
-                            break;
-                    }
-                }
-            }
-
-            this.enemyTypes = new string[,] {
-                { "  ________  ",
-                  " / ¨¨¨¨¨¨ \\ ",
-                  "|  _ ≡≡ _  |",
-                  "|─/ \\││/ \\─|",
-                  "|/   ├┤   \\|" },
-
-                { "  ________  ",
-                  " / ¨¨¨¨¨¨ \\ ",
-                  "|  _ ≡≡ _  |",
-                  "|┌/ \\__/ \\┐|",
-                  "|┤        ├|" },
-
-                { " __________ ",
-                  "/  ¨¨¨¨¨¨  \\",
-                  "|   ≡  ≡   |",
-                  " \\ /╔══╗\\ / ",
-                  "  \\┤    ├/  " }
+                "  ________  ",
+                " / ¨¨¨¨¨¨ \\ ",
+                "|  _ ≡≡ _  |",
+                "|─/ \\││/ \\─|",
+                "|/   ├┤   \\|"
             };
+        }
+
+        public Enemy(int type, int l, int t)
+        {
+            posLeft = l;
+            posTop = t;
+            enemyMoveTimer = 1;
+
+            switch (type)
+            {
+                case 0:
+                    enemyHp = 5;
+
+                    enemyShip = new string[]
+                    {
+                        "  ________  ",
+                        " / ¨¨¨¨¨¨ \\ ",
+                        "|  _ == _  |",
+                        "|─/ \\││/ \\─|",
+                        "|/   ├┤   \\|"
+                    };
+                    enemyShootTimer = 10;
+                    break;
+                case 1:
+                    enemyHp = 3;
+
+                    enemyShip = new string[]
+                    {
+                        "  ________  ",
+                        " / ¨¨¨¨¨¨ \\ ",
+                        "|  _ == _  |",
+                        "|┌/ \\__/ \\┐|",
+                        "|┤        ├|"
+                    };
+                    enemyShootTimer = 5;
+                    break;
+                case 2:
+                    enemyHp = 10;
+
+                    enemyShip = new string[]
+                    {
+                        " __________ ",
+                        "/  ¨¨¨¨¨¨  \\",
+                        "|   =  =   |",
+                        " \\ /╔══╗\\ / ",
+                        "  \\┤    ├/  "
+                    };
+                    enemyShootTimer = 15;
+                    break;
+            }
+        }
+
+        public void DrawEnemy()
+        {
+            for (int i = 0; i < enemyShip.Length; i++)
+            {
+                Console.SetCursorPosition(posLeft, posTop + i);
+                Console.Write(enemyShip[i]);
+            }
+        }
+
+        public void ClearEnemy()
+        {
+            for (int i = 0; i < enemyShip.Length; i++)
+            {
+                Console.SetCursorPosition(posLeft, posTop + i);
+                Console.Write(new String(' ', enemyShip[i].Length));
+            }
+        }
+
+        public void MoveEnemy()
+        {
+            if (enemyMoveTimer == 0 && posTop < Globals.WINDOW_HEIGHT + 1 - 2)
+            {
+                posTop += 1;
+                enemyMoveTimer = 1;    
+            }
+            else
+            {
+                enemyMoveTimer--;
+            }
+            
+        }
+
+        public void TakeHit()
+        {
+            if (enemyHp > 0)
+                enemyHp--;
         }
     }
 }

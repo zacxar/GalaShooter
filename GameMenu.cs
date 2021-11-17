@@ -30,7 +30,7 @@ namespace GalaShooter
             };
 
             this.currentPos = 0;
-            this.menuHeight = menuOptions.Length + menuOptions.GetLength(0) - 1; ;
+            this.menuHeight = menuOptions.Length + menuOptions.GetLength(0) - 1;
             this.menuWidth = menuOptions[1, 0].Length;
         }
 

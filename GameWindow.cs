@@ -10,6 +10,8 @@ namespace GalaShooter
 
         private string[] nameChoice;
 
+        private string[] tutorial;
+
         public GameWindow()
         {
             this.title = new string[] {
@@ -19,9 +21,16 @@ namespace GalaShooter
             };
 
             this.nameChoice = new string[] {
-            " ___ _  _  __   __   ___  ___    _   _  __  _  _  ___    _  _  __  _  _  ___",
-            "|    |__| |  | |  | [__  |___     \\_/  |  | |  | |__/    |\\ | |__| |\\/| |___",
-            "|___ |  | |__| |__| ___] |___      |   |__| |__| |  \\    | \\| |  | |  | |___"
+                " ___ _  _  __   __   ___  ___    _   _  __  _  _  ___    _  _  __  _  _  ___",
+                "|    |__| |  | |  | [__  |___     \\_/  |  | |  | |__/    |\\ | |__| |\\/| |___",
+                "|___ |  | |__| |__| ___] |___      |   |__| |__| |  \\    | \\| |  | |  | |___"
+            };
+
+            this.tutorial = new string[]
+            {
+                "_ _  _  ___ ___  ___ _  _  ___ ___ _  __  _  _  ___",
+                "| |\\ | [__   |  |__/ |  | |     |  | |  | |\\ | [__ ",
+                "| | \\| ___]  |  |  \\ |__| |___  |  | |__| | \\| ___]"
             };
         }
 
@@ -84,7 +93,35 @@ namespace GalaShooter
             Console.ResetColor();
 
             Console.SetCursorPosition(left, top + 2);
-            Console.Write("YOUR NAME: ");
+            Console.Write("GREETINGS PILOT, WHAT IS YOUR NAME?\n");
+            Console.SetCursorPosition(left, top + 3);
+        }
+
+        public void DrawTutorial()
+        {
+            int height = tutorial.Length;
+            int width = tutorial[0].Length;
+            int left = (Globals.WINDOW_WIDTH + 2 - width) / 2;
+            int top = (Globals.WINDOW_HEIGHT - height) / 2;
+            int s = tutorial[0].Length / 2;
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            for (int i = 0; i < tutorial.Length; i++)
+            {
+                Console.SetCursorPosition(left, top);
+                Console.Write(tutorial[i]);
+                top++;
+            }
+            Console.ResetColor();
+
+            Console.SetCursorPosition(left, top + 2);
+            Console.Write("TO MOVE YOUR SHIP USE LEFT ARROW <- AND RIGHT ARROW ->");
+            Console.SetCursorPosition(left, top + 3);
+            Console.Write("TO SHOOT USE SPACEBAR");
+            Console.SetCursorPosition(left, top + 4);
+            Console.Write("AVOID ENEMY MISSILES AND DESTROY ALL ENEMY SHIPS");
+            Console.SetCursorPosition(left, top + 7);
+            Console.Write("PRESS ANY KEY TO CONTINUE...");
         }
     }
 }

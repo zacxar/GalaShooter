@@ -92,7 +92,7 @@ namespace GalaShooter
 
             Random rnd = new Random();
             int enemiesSpawnTimer = 0;
-            int timeToSpawnNextEnemy = rnd.Next(30, 56);
+            int timeToSpawnNextEnemy = rnd.Next(20, 56);
             playerMissiles = new List<PlayerMissile>();
             enemyMissiles = new List<EnemyMissile>();
             enemies = new List<Enemy>();
@@ -325,6 +325,12 @@ namespace GalaShooter
 
             Console.CursorVisible = true;
             string name = Console.ReadLine();
+            while (name.Length == 0)
+            {
+                Console.SetCursorPosition((Globals.WINDOW_WIDTH + 2 - gameWindow.nameChoice[0].Length) / 2, (Globals.WINDOW_HEIGHT - gameWindow.nameChoice.Length) / 2 + 6);
+                name = Console.ReadLine();
+            }
+
             player.playerName = name;
             gameInfo.playerName = name;
             Console.CursorVisible = false;
@@ -364,7 +370,8 @@ namespace GalaShooter
             gameWindow.DrawGameOver(gameInfo.score);
             GameInput input = GameInput.enter;
 
-            leaderboard.AddToLeaderboard(player.playerName, gameInfo.score);
+            if(gameInfo.score > 0)
+                leaderboard.AddToLeaderboard(player.playerName, gameInfo.score);
 
             while (input != GameInput.exit)
                 input = inputHandler.GetInput();

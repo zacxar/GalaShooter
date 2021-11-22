@@ -91,10 +91,12 @@ namespace GalaShooter
                     continue;
             }
 
+            if (leaderboardList.Count == 0)
+                leaderboardList.Add(new LeaderboardPosition(name, score));
+
             if (leaderboardList.Count > 10)
                 leaderboardList.RemoveRange(10, leaderboardList.Count - 10);
 
-            //File.Delete(path);
             StreamWriter streamWriter = File.CreateText(path);
 
             for(int i = 0; i < leaderboardList.Count; i++)

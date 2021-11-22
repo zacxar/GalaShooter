@@ -49,7 +49,7 @@ namespace GalaShooter
             switch (type)
             {
                 case 0:
-                    enemyHp = 10;
+                    enemyHp = 6;
 
                     enemyShip = new string[]
                     {
@@ -61,7 +61,7 @@ namespace GalaShooter
                     };
                     break;
                 case 1:
-                    enemyHp = 8;
+                    enemyHp = 4;
 
                     enemyShip = new string[]
                     {
@@ -73,7 +73,7 @@ namespace GalaShooter
                     };
                     break;
                 case 2:
-                    enemyHp = 12;
+                    enemyHp = 8;
 
                     enemyShip = new string[]
                     {

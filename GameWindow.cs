@@ -7,7 +7,7 @@ namespace GalaShooter
     class GameWindow
     {
         private string[] title;
-        private string[] nameChoice;
+        public string[] nameChoice { get; private set; }
         private string[] tutorial;
         private string[] pause;
         private string[] gameOver;

@@ -9,18 +9,23 @@ namespace GalaShooter
 {
     class Enemy
     {
-        public int enemyHp { get; private set; }
+        public int enemyHp { get; set; }
         public int posLeft { get; private set; }
         public int posTop { get; private set; }
         public string[] enemyShip { get; private set; }
         public int enemyShootTimer { get; set; }
-        public int enemyMoveTimer { get; set; }
+        public int enemyTimeToShoot { get; set; }
+        public int type { get; private set; }
+        private int enemyMoveTimer;
 
         public Enemy()
         {
             enemyHp = 5;
             posLeft = 2;
             posTop = 4;
+            enemyMoveTimer = 2;
+            enemyShootTimer = 7;
+            type = 0;
 
             enemyShip = new string[]
             {
@@ -36,12 +41,15 @@ namespace GalaShooter
         {
             posLeft = l;
             posTop = t;
-            enemyMoveTimer = 1;
+            enemyMoveTimer = 2;
+            this.type = type;
+            enemyShootTimer = 0;
+            enemyTimeToShoot = 10;
 
             switch (type)
             {
                 case 0:
-                    enemyHp = 5;
+                    enemyHp = 10;
 
                     enemyShip = new string[]
                     {
@@ -51,10 +59,9 @@ namespace GalaShooter
                         "|─/ \\││/ \\─|",
                         "|/   ├┤   \\|"
                     };
-                    enemyShootTimer = 10;
                     break;
                 case 1:
-                    enemyHp = 3;
+                    enemyHp = 8;
 
                     enemyShip = new string[]
                     {
@@ -64,10 +71,9 @@ namespace GalaShooter
                         "|┌/ \\__/ \\┐|",
                         "|┤        ├|"
                     };
-                    enemyShootTimer = 5;
                     break;
                 case 2:
-                    enemyHp = 10;
+                    enemyHp = 12;
 
                     enemyShip = new string[]
                     {
@@ -77,7 +83,6 @@ namespace GalaShooter
                         " \\ /╔══╗\\ / ",
                         "  \\┤    ├/  "
                     };
-                    enemyShootTimer = 15;
                     break;
             }
         }
@@ -105,7 +110,7 @@ namespace GalaShooter
             if (enemyMoveTimer == 0 && posTop < Globals.WINDOW_HEIGHT + 1 - 2)
             {
                 posTop += 1;
-                enemyMoveTimer = 1;    
+                enemyMoveTimer = 2;    
             }
             else
             {

@@ -11,12 +11,11 @@ namespace GalaShooter
         public int playerHP { get; private set; }
         public int posLeft { get; private set; }
         public int posTop { get; private set; }
-        public int score { get; set; }
         public int playerShootTimer { get; set; }
 
         public Player()
         {
-            this.playerShip = new string[]
+            playerShip = new string[]
             {
                 "  __/┘└\\__  ",
                 " /─ ¨  ¨ ─\\ ",
@@ -25,11 +24,10 @@ namespace GalaShooter
                 "    ^  ^    "
             };
 
-            this.posLeft = (Globals.WINDOW_WIDTH + 2 - playerShip[0].Length) / 2;
-            this.posTop = 46;
-            this.playerHP = 5;
-            this.score = 0;
-            this.playerShootTimer = 5;
+            posLeft = (Globals.WINDOW_WIDTH + 2 - playerShip[0].Length) / 2;
+            posTop = 46;
+            playerHP = 5;
+            playerShootTimer = 5;
         }
 
         public void DrawPlayer()
@@ -85,10 +83,10 @@ namespace GalaShooter
 
         public void ResetPlayer()
         {
-            this.posLeft = (Globals.WINDOW_WIDTH + 2 - playerShip[0].Length) / 2;
-            this.posTop = 46;
-            this.playerHP = 5;
-            this.score = 0;
+            posLeft = (Globals.WINDOW_WIDTH + 2 - playerShip[0].Length) / 2;
+            posTop = 46;
+            playerHP = 5;
+            playerShootTimer = 5;
         }
     }
 }

@@ -10,13 +10,20 @@ namespace GalaShooter
         private GameWindow gameWindow;
         private InputHandler inputHandler;
         private Player player;
+        private GameInfo gameInfo;
+        private Leaderboard leaderboard;
+        private List<PlayerMissile> playerMissiles;
+        private List<EnemyMissile> enemyMissiles;
+        private List<Enemy> enemies;
 
         public GameManager()
         {
-            this.gameMenu = new GameMenu();
-            this.gameWindow = new GameWindow();
-            this.inputHandler = new InputHandler();
-            this.player = new Player();
+            gameMenu = new GameMenu();
+            gameWindow = new GameWindow();
+            inputHandler = new InputHandler();
+            player = new Player();
+            gameInfo = new GameInfo();
+            leaderboard = new Leaderboard();
         }
 
         public void GameStart()
@@ -85,13 +92,15 @@ namespace GalaShooter
 
             Random rnd = new Random();
             int enemiesSpawnTimer = 0;
-            int timeToSpawnNextEnemy = rnd.Next(50, 76);
-            List<PlayerMissile> playerMissiles = new List<PlayerMissile>();
-            List<Enemy> enemies = new List<Enemy>();
+            int timeToSpawnNextEnemy = rnd.Next(30, 56);
+            playerMissiles = new List<PlayerMissile>();
+            enemyMissiles = new List<EnemyMissile>();
+            enemies = new List<Enemy>();
 
             player.DrawPlayer();
+            gameInfo.ShowGameInfo();
 
-            while (true)
+            while (player.playerHP > 0)
             {
                 GameInput input = inputHandler.GetInput();
                 switch (input)
@@ -111,8 +120,65 @@ namespace GalaShooter
                         }
                         break;
                     case GameInput.exit:
-                        return;
+                        switch (Pause())
+                        {
+                            case true:
+                                gameWindow.ClearPause();
+                                for (int i = 0; i < enemies.Count; i++)
+                                {
+                                    enemies[i].ClearEnemy();
+                                    enemies[i].DrawEnemy();
+                                }
+                                break;
+                            case false:
+                                gameWindow.ClearPause();
+                                GameOver();
+                                return;
+                                break;
+                        }
                         break;
+                }
+
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    if (enemies[i].enemyShootTimer != enemies[i].enemyTimeToShoot)
+                        enemies[i].enemyShootTimer++;
+                    else if (enemies[i].posTop < Globals.WINDOW_HEIGHT - 15)
+                    {
+                        switch (enemies[i].type)
+                        {
+                            case 0:
+                                enemyMissiles.Add(new EnemyMissile(enemies[i].posLeft + 5, enemies[i].posTop + 6));
+                                enemyMissiles.Add(new EnemyMissile(enemies[i].posLeft + 6, enemies[i].posTop + 6));
+                                break;
+                            case 1:
+                                enemyMissiles.Add(new EnemyMissile(enemies[i].posLeft, enemies[i].posTop + 6));
+                                enemyMissiles.Add(new EnemyMissile(enemies[i].posLeft + 11, enemies[i].posTop + 6));
+                                break;
+                            case 2:
+                                enemyMissiles.Add(new EnemyMissile(enemies[i].posLeft + 4, enemies[i].posTop + 6));
+                                enemyMissiles.Add(new EnemyMissile(enemies[i].posLeft + 5, enemies[i].posTop + 6));
+                                enemyMissiles.Add(new EnemyMissile(enemies[i].posLeft + 6, enemies[i].posTop + 6));
+                                enemyMissiles.Add(new EnemyMissile(enemies[i].posLeft + 7, enemies[i].posTop + 6));
+                                break;
+                        }
+
+                        enemies[i].enemyShootTimer = 0;
+                        enemies[i].enemyTimeToShoot = rnd.Next(15, 51);
+                    }
+                }
+
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    if (enemies[i].posTop == Globals.WINDOW_HEIGHT - 6)
+                    {
+                        enemies[i].DrawEnemy();
+                        enemies[i].ClearEnemy();
+                        enemies.RemoveAt(i);
+
+                        gameInfo.DecreaseScore();
+                        gameInfo.IncreaseMissedEnemies();
+                    }
                 }
 
                 for (int i = 0; i < enemies.Count; i++)
@@ -122,13 +188,13 @@ namespace GalaShooter
                     enemies[i].DrawEnemy();
                 }
 
-                for (int i = 0; i < enemies.Count; i++)
+                for (int i = 0; i < playerMissiles.Count; i++)
                 {
-                    if (enemies[i].enemyHp == 0 || enemies[i].posTop == Globals.WINDOW_HEIGHT - 1)
+                    if (playerMissiles[i].posTop <= 6)
                     {
-                        enemies[i].DrawEnemy();
-                        enemies[i].ClearEnemy();
-                        enemies.RemoveAt(i);
+                        playerMissiles[i].DrawMissile();
+                        playerMissiles[i].ClearMissile();
+                        playerMissiles.RemoveAt(i);
                     }
                 }
 
@@ -139,15 +205,27 @@ namespace GalaShooter
                     playerMissiles[i].DrawMissile();
                 }
 
-                for (int i = 0; i < playerMissiles.Count; i++)
+                for (int i = 0; i < enemyMissiles.Count; i++)
                 {
-                    if (playerMissiles[i].posTop <= 4)
+                    if (enemyMissiles[i].posTop >= Globals.WINDOW_HEIGHT - 5)
                     {
-                        playerMissiles[i].DrawMissile();
-                        playerMissiles[i].ClearMissile();
-                        playerMissiles.RemoveAt(i);
+                        enemyMissiles[i].DrawMissile();
+                        enemyMissiles[i].ClearMissile();
+                        enemyMissiles.RemoveAt(i);
                     }
                 }
+
+                for (int i = 0; i < enemyMissiles.Count; i++)
+                {
+                    enemyMissiles[i].ClearMissile();
+                    enemyMissiles[i].MoveMissile();
+                    enemyMissiles[i].DrawMissile();
+                }
+
+                HandleCollisions();
+
+                if (player.playerHP == 0)
+                    GameOver();
 
                 if (enemiesSpawnTimer != timeToSpawnNextEnemy)
                     enemiesSpawnTimer++;
@@ -158,7 +236,7 @@ namespace GalaShooter
                     enemies.Add(new Enemy(rnd.Next(0, 3), 2 + l * 6, 4));
 
                     enemiesSpawnTimer = 0;
-                    timeToSpawnNextEnemy= rnd.Next(50, 76);
+                    timeToSpawnNextEnemy = rnd.Next(30, 56);
                 }
 
                 if (player.playerShootTimer != 5)
@@ -166,17 +244,89 @@ namespace GalaShooter
 
                 System.Threading.Thread.Sleep(50);
             }
+            return;
+        }
+
+        public void HandleCollisions()
+        {
+            for (int i = 0; i < playerMissiles.Count; i++)
+            {
+                int mLeft = playerMissiles[i].posLeft;
+                int mTop = playerMissiles[i].posTop;
+                for (int j = 0; j < enemies.Count; j++)
+                {
+                    if (mLeft >= enemies[j].posLeft && mLeft <= enemies[j].posLeft + enemies[j].enemyShip[0].Length - 1
+                        && mTop <= enemies[j].posTop + enemies[j].enemyShip.Length && mTop >= enemies[j].posTop)
+                    {
+                        enemies[j].enemyHp--;
+                        playerMissiles[i].DrawMissile();
+                        playerMissiles[i].ClearMissile();
+                        playerMissiles.RemoveAt(i);
+
+                        if (enemies[j].enemyHp == 0)
+                        {
+                            enemies[j].DrawEnemy();
+                            enemies[j].ClearEnemy();
+                            enemies.RemoveAt(j);
+
+                            gameInfo.IncreaseScore();
+                            gameInfo.IncreaseDestroyedEnemies();
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < enemyMissiles.Count; i++)
+            {
+                int mLeft = enemyMissiles[i].posLeft;
+                int mTop = enemyMissiles[i].posTop;
+
+                if (mLeft >= player.posLeft && mLeft <= player.posLeft + player.playerShip[0].Length - 1
+                    && mTop <= player.posTop + player.playerShip.Length - 2 && mTop >= player.posTop)
+                {
+                    player.TakeHit();
+                    gameInfo.DrawPlayerLives(player.playerHP);
+                    enemyMissiles[i].DrawMissile();
+                    enemyMissiles[i].ClearMissile();
+                    enemyMissiles.RemoveAt(i);
+                }
+            }
+
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                int mLeft = enemies[i].posLeft;
+                int mTop = enemies[i].posTop;
+                int height = player.playerShip.Length;
+                int width = player.playerShip[0].Length;
+
+                if ((mLeft + width >= player.posLeft + 5 - 1 && mLeft - width + 1 <= player.posLeft)
+                    && (mTop + height >= player.posTop && mTop - height <= player.posTop - 1))
+                {
+                    player.TakeHit();
+                    gameInfo.DrawPlayerLives(player.playerHP);
+                    enemies[i].enemyHp = 0;
+
+                    enemies[i].DrawEnemy();
+                    enemies[i].ClearEnemy();
+                    enemies.RemoveAt(i);
+
+                    gameInfo.IncreaseScore();
+                    gameInfo.IncreaseDestroyedEnemies();
+                }
+            }
         }
 
         public void NameChoiceMenu()
         {
             player.ResetPlayer();
+            gameInfo.ResetGameInfo();
             gameWindow.ClearScreen();
             gameWindow.DrawNameChoiceMenu();
 
             Console.CursorVisible = true;
             string name = Console.ReadLine();
             player.playerName = name;
+            gameInfo.playerName = name;
             Console.CursorVisible = false;
         }
 
@@ -187,9 +337,44 @@ namespace GalaShooter
             Console.ReadKey();
         }
 
+        public Boolean Pause()
+        {
+            gameWindow.DrawPause();
+            GameInput input = GameInput.enter;
+
+            while (input != GameInput.exit && input != GameInput.space)
+                input = inputHandler.GetInput();
+
+            switch (input)
+            {
+                case GameInput.exit:
+                    return false;
+                    break;
+                case GameInput.space:
+                    return true;
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        }
+
+        public void GameOver()
+        {
+            gameWindow.DrawGameOver(gameInfo.score);
+            GameInput input = GameInput.enter;
+
+            leaderboard.AddToLeaderboard(player.playerName, gameInfo.score);
+
+            while (input != GameInput.exit)
+                input = inputHandler.GetInput();
+        }
+
         public void ShowLeaderboard()
         {
-
+            gameWindow.ClearScreen();
+            leaderboard.DrawLeaderboard();
+            Console.ReadKey();
         }
     }
 }

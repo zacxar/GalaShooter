@@ -1,1 +1,1 @@
-Simple copy of Space Invaders in console.
+Simple clone of Space Invaders in console.
